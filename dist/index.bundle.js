@@ -1,0 +1,1 @@
+document.body.appendChild((()=>{const e=document.createElement("div");return[{ID:0,description:"Learn React",completed:!0},{ID:1,description:"Complete Today's task",completed:!1},{ID:2,description:"Learn Firebase",completed:!0}].forEach((n=>{e.innerHTML+=`\n        <p>${n.description}</p>      \n    `})),e})());
