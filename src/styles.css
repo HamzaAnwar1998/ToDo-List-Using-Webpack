@@ -115,7 +115,7 @@ input:checked + span {
     align-items: center;
     border: none;
     outline: none;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     background-color: #fff;
 }
