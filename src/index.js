@@ -49,6 +49,14 @@ class UI {
     storedTodos.forEach((storedTodo) => {
       UI.addTodoToList(storedTodo);
     });
+    // handle update
+    const labels = document.querySelectorAll('.label');
+    labels.forEach((label) => {
+      label.addEventListener('input', (e) => {
+        console.log(e);
+        // your update logic
+      });
+    });
   }
 
   // adding todo to list

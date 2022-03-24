@@ -3,7 +3,7 @@ const addTodoToUI = (todo) => {
     <li class="todo" id="${todo.ID}">
     <div class="left">
       <input type="checkbox" ${todo.Completed ? 'checked' : 'unchecked'}/>
-      <span>${todo.Description}</span>
+      <label class="label" contenteditable="true">${todo.Description}</label>
     </div>
     <div class="right">
       <span class="fa-solid fa-trash fa-lg elippse-icon remove-btn">

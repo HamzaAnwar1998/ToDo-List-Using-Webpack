@@ -99,7 +99,7 @@
     padding: 10px;
 }
 
-input:checked + span {
+input:checked + label {
     text-decoration: line-through;
 }
 
