@@ -1,26 +1,101 @@
+/* eslint-disable max-classes-per-file */
+/* eslint-disable no-use-before-define */
+
 import './styles.css';
+import { deleteTodoFromLS } from './modules/deleteTodoFromLS.js';
+import { addTodoToUI } from './modules/addTodoToUI.js';
+import { deleteTodoFromUI } from './modules/deleteTodoFromUI.js';
 
-const element = document.querySelector('.todo-container');
+class Store {
+  // getting todos from LS
+  static getTodos() {
+    let todos;
+    if (localStorage.getItem('Todos') !== null) {
+      todos = JSON.parse(localStorage.getItem('Todos'));
+    } else {
+      todos = [];
+    }
+    return todos;
+  }
 
-const todos = [
-  { ID: 0, description: 'Learn React', completed: true },
-  { ID: 1, description: "Complete Today's task", completed: false },
-  { ID: 2, description: 'Learn Firebase', completed: true },
-];
+  // adding todo to local storage
+  static addTodo(todo) {
+    storedTodos.push(todo);
+    localStorage.setItem('Todos', JSON.stringify(storedTodos));
+  }
 
-todos.forEach((todo) => {
-  todos.sort((a, b) => a.index - b.index);
-  element.innerHTML += `
-      <li class="todo" id="${todo.ID}">
-        <div class="left">
-          <input type="checkbox" ${todo.completed ? 'checked' : 'unchecked'}/>
-          <span>${todo.description}</span>
-        </div>
-        <div class="right">
-          <span class="elippse-icon">
-            <i class="fa-solid fa-ellipsis-vertical fa-lg"></i>
-          </span>
-        </div>
-      </li>      
-  `;
+  // removing todo from local storage
+  static removeTodo(ID) {
+    const storedTodos = Store.getTodos();
+    // imported
+    deleteTodoFromLS(ID, storedTodos);
+  }
+}
+
+// global variable
+const storedTodos = Store.getTodos();
+
+// Todo Class: Represents a todo
+class Todo {
+  constructor(Description, Completed) {
+    this.Description = Description;
+    this.Completed = Completed;
+  }
+}
+
+// UI Class: handles UI tasks
+class UI {
+  // getting todos
+  static displayTodos() {
+    storedTodos.forEach((storedTodo, index) => {
+      const id = index + 1;
+      UI.addTodoToList(storedTodo, id);
+    });
+  }
+
+  // adding todo to list
+  static addTodoToList(storedTodo, index) {
+    // imported
+    addTodoToUI(storedTodo, index);
+  }
+
+  // clear form fields
+  static clearForm() {
+    document.querySelector('.input').value = '';
+  }
+
+  // delete todo from UI
+  static deleteTodo(el) {
+    deleteTodoFromUI(el);
+  }
+}
+
+// Event Display Books
+document.addEventListener('DOMContentLoaded', UI.displayTodos);
+
+// Event Add a book
+document.getElementById('addTodos-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  // getting input values
+  const description = document.querySelector('.input').value;
+  const completed = false;
+
+  // instantiate todo
+  const todo = new Todo(description, completed);
+
+  // adding new todo to UI
+  UI.addTodoToList(todo);
+
+  // adding todo to LS
+  Store.addTodo(todo);
+
+  // clearing form fields
+  UI.clearForm();
+});
+
+// Event: remove a todo
+document.querySelector('.todo-container').addEventListener('click', (e) => {
+  UI.deleteTodo(e.target);
+  Store.removeTodo(e.target.id);
 });
