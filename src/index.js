@@ -25,10 +25,8 @@ class Store {
   }
 
   // removing todo from local storage
-  static removeTodo(ID) {
-    const storedTodos = Store.getTodos();
-    // imported
-    deleteTodoFromLS(ID, storedTodos);
+  static removeTodo(el) {
+    deleteTodoFromLS(el, storedTodos);
   }
 }
 
@@ -37,7 +35,8 @@ const storedTodos = Store.getTodos();
 
 // Todo Class: Represents a todo
 class Todo {
-  constructor(Description, Completed) {
+  constructor(ID, Description, Completed) {
+    this.ID = ID;
     this.Description = Description;
     this.Completed = Completed;
   }
@@ -47,16 +46,15 @@ class Todo {
 class UI {
   // getting todos
   static displayTodos() {
-    storedTodos.forEach((storedTodo, index) => {
-      const id = index + 1;
-      UI.addTodoToList(storedTodo, id);
+    storedTodos.forEach((storedTodo) => {
+      UI.addTodoToList(storedTodo);
     });
   }
 
   // adding todo to list
-  static addTodoToList(storedTodo, index) {
+  static addTodoToList(storedTodo) {
     // imported
-    addTodoToUI(storedTodo, index);
+    addTodoToUI(storedTodo);
   }
 
   // clear form fields
@@ -77,12 +75,14 @@ document.addEventListener('DOMContentLoaded', UI.displayTodos);
 document.getElementById('addTodos-form').addEventListener('submit', (e) => {
   e.preventDefault();
 
-  // getting input values
+  // getting values
   const description = document.querySelector('.input').value;
   const completed = false;
+  const storedTodos = Store.getTodos();
+  const id = storedTodos.length + 1;
 
   // instantiate todo
-  const todo = new Todo(description, completed);
+  const todo = new Todo(id, description, completed);
 
   // adding new todo to UI
   UI.addTodoToList(todo);
@@ -97,5 +97,5 @@ document.getElementById('addTodos-form').addEventListener('submit', (e) => {
 // Event: remove a todo
 document.querySelector('.todo-container').addEventListener('click', (e) => {
   UI.deleteTodo(e.target);
-  Store.removeTodo(e.target.id);
+  Store.removeTodo(e.target);
 });
