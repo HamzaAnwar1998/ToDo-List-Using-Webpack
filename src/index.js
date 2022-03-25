@@ -52,9 +52,20 @@ class UI {
     // handle update
     const labels = document.querySelectorAll('.label');
     labels.forEach((label) => {
-      label.addEventListener('input', (e) => {
-        console.log(e);
+      label.addEventListener('blur', () => {
         // your update logic
+        const id = Number(label.parentElement.parentElement.id);
+        storedTodos.forEach((storedTodo) => {
+          let item;
+          if (id === storedTodo.ID) {
+            item = storedTodo;
+            item.ID = storedTodo.ID;
+            item.Completed = false;
+            item.Description = label.textContent;
+            storedTodo = item;
+            localStorage.setItem('Todos', JSON.stringify(storedTodos));
+          }
+        });
       });
     });
   }

@@ -103,11 +103,14 @@ input:checked + label {
     text-decoration: line-through;
 }
 
+.label{
+    outline: none;
+}
+
 .elippse-icon{
     cursor: pointer;
     margin-right: -10px;
     color: red;
-
 }
 
 /* clear all */
