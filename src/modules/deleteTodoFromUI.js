@@ -4,5 +4,4 @@ const deleteTodoFromUI = (el) => {
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { deleteTodoFromUI };
+export default deleteTodoFromUI;

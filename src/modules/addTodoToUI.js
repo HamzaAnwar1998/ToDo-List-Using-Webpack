@@ -13,5 +13,4 @@ const addTodoToUI = (todo) => {
         `;
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { addTodoToUI };
+export default addTodoToUI;

@@ -10,5 +10,4 @@ const deleteTodoFromLS = (el, storedTodos) => {
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { deleteTodoFromLS };
+export default deleteTodoFromLS;
