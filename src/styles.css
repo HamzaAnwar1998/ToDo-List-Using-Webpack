@@ -73,6 +73,9 @@
     margin-right: 35px;
     cursor: pointer;
     color: #a9a9a9;
+    border: none;
+    background: transparent;
+    outline: none;
 }
 
 .mainbox .todo-input-div .plus-icon:hover{
@@ -96,12 +99,18 @@
     padding: 10px;
 }
 
-input:checked + span {
+input:checked + label {
     text-decoration: line-through;
 }
 
+.label{
+    outline: none;
+}
+
 .elippse-icon{
-    cursor: move;
+    cursor: pointer;
+    margin-right: -10px;
+    color: red;
 }
 
 /* clear all */
