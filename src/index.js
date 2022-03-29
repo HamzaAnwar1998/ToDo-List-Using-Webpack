@@ -1,114 +1,82 @@
-/* eslint-disable no-use-before-define */
-
 import './styles.css';
-import deleteTodoFromLS from './modules/deleteTodoFromLS.js';
-import addTodoToUI from './modules/addTodoToUI.js';
-import deleteTodoFromUI from './modules/deleteTodoFromUI.js';
 
-// getting todos from LS
-function getTodos() {
-  let todos;
-  if (localStorage.getItem('Todos') !== null) {
-    todos = JSON.parse(localStorage.getItem('Todos'));
-  } else {
-    todos = [];
-  }
-  return todos;
-}
+// modules
+import handleTodo from './modules/handleTodo.js';
+import setLocalStorage from './modules/setLocalStorage.js';
 
-// adding todo to local storage
-function addTodo(todo) {
-  storedTodos.push(todo);
-  localStorage.setItem('Todos', JSON.stringify(storedTodos));
-}
+// getting elements
+const form = document.getElementById('addTodos-form');
+const inputItem = document.querySelector('.input');
+const todoContainer = document.querySelector('.todo-container');
 
-// removing todo from local storage
-function removeTodo(el) {
-  deleteTodoFromLS(el, storedTodos);
-}
+// creating an empty array
+let todoItems = [];
 
-// global variable
-const storedTodos = getTodos();
-
-// Todo Class: Represents a todo
-class Todo {
-  constructor(ID, Description, Completed) {
-    this.ID = ID;
-    this.Description = Description;
-    this.Completed = Completed;
-  }
-}
-
-// getting todos
-function displayTodos() {
-  storedTodos.forEach((storedTodo) => {
-    addTodoToList(storedTodo);
-  });
-  // handle update
-  const labels = document.querySelectorAll('.label');
-  labels.forEach((label) => {
-    label.addEventListener('blur', () => {
-      // your update logic
-      const id = Number(label.parentElement.parentElement.id);
-      storedTodos.forEach((storedTodo) => {
-        let item;
-        if (id === storedTodo.ID) {
-          item = storedTodo;
-          item.ID = storedTodo.ID;
-          item.Completed = false;
-          item.Description = label.textContent;
-          storedTodo = item;
-          localStorage.setItem('Todos', JSON.stringify(storedTodos));
-        }
-      });
+// displaying todos
+const getList = (todoItems) => {
+  todoContainer.innerHTML = '';
+  if (todoItems.length > 0) {
+    todoItems.forEach((todo) => {
+      todoContainer.insertAdjacentHTML('beforeend', `
+      <li class="todo">
+    <div class="left" data-time="${todo.ID}">
+      <input class='checkbox' type="checkbox" ${todo.Completed ? 'checked' : 'unchecked'}/>
+      <label class="label" contenteditable="true">${todo.Description}</label>
+    </div>
+    <div class="right">
+      <span class="fa-solid fa-trash fa-lg elippse-icon remove-btn">
+      </span>
+    </div>
+  </li>      
+      `);
+      handleTodo(todo, todoItems);
     });
+  } else {
+    todoContainer.textContent = 'No tasks found, have fun!';
+  }
+};
+
+// get items from local storage
+const getLocalStorage = () => {
+  const todoStorage = localStorage.getItem('Todos');
+  if (todoStorage === null) {
+    todoItems = [];
+  } else {
+    todoItems = JSON.parse(todoStorage);
+  }
+  getList(todoItems);
+};
+
+// event
+document.addEventListener('DOMContentLoaded', () => {
+  // add todos to LS
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const itemName = inputItem.value.trim();
+    const itemObj = {
+      ID: todoItems.length + 1,
+      Description: itemName,
+      Completed: false,
+    };
+    todoItems.push(itemObj);
+    setLocalStorage(todoItems);
+    // display todos in realtime
+    getList(todoItems);
+    form.reset();
   });
-}
 
-// adding todo to list
-function addTodoToList(storedTodo) {
-  // imported
-  addTodoToUI(storedTodo);
-}
-
-// clear form fields
-function clearForm() {
-  document.querySelector('.input').value = '';
-}
-
-// delete todo from UI
-function deleteTodo(el) {
-  deleteTodoFromUI(el);
-}
-
-// Event Display Books
-document.addEventListener('DOMContentLoaded', displayTodos);
-
-// Event Add a book
-document.getElementById('addTodos-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  // getting values
-  const description = document.querySelector('.input').value;
-  const completed = false;
-  const storedTodos = getTodos();
-  const id = storedTodos.length + 1;
-
-  // instantiate todo
-  const todo = new Todo(id, description, completed);
-
-  // adding new todo to UI
-  addTodoToList(todo);
-
-  // adding todo to LS
-  addTodo(todo);
-
-  // clearing form fields
-  clearForm();
+  // retrive todos from LS
+  getLocalStorage();
 });
 
-// Event: remove a todo
-document.querySelector('.todo-container').addEventListener('click', (e) => {
-  deleteTodo(e.target);
-  removeTodo(e.target);
+// clear all completed
+document.querySelector('.clear-all').addEventListener('click', (e) => {
+  e.preventDefault();
+  const filteredTodos = todoItems.filter((item) => !item.Completed);
+  for (let i = 0; i < filteredTodos.length; i += 1) {
+    filteredTodos[i].ID = filteredTodos.indexOf(filteredTodos[i]) + 1;
+  }
+  todoItems = filteredTodos;
+  setLocalStorage(todoItems);
+  getList(todoItems);
 });

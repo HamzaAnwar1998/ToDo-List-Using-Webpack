@@ -116,37 +116,7 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles.css */ \"./src/styles.css\");\n/* harmony import */ var _modules_deleteTodoFromLS_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/deleteTodoFromLS.js */ \"./src/modules/deleteTodoFromLS.js\");\n/* harmony import */ var _modules_addTodoToUI_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/addTodoToUI.js */ \"./src/modules/addTodoToUI.js\");\n/* harmony import */ var _modules_deleteTodoFromUI_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/deleteTodoFromUI.js */ \"./src/modules/deleteTodoFromUI.js\");\n/* eslint-disable max-classes-per-file */\n/* eslint-disable no-use-before-define */\n\n\n\n\n\n\nclass Store {\n  // getting todos from LS\n  static getTodos() {\n    let todos;\n    if (localStorage.getItem('Todos') !== null) {\n      todos = JSON.parse(localStorage.getItem('Todos'));\n    } else {\n      todos = [];\n    }\n    return todos;\n  }\n\n  // adding todo to local storage\n  static addTodo(todo) {\n    storedTodos.push(todo);\n    localStorage.setItem('Todos', JSON.stringify(storedTodos));\n  }\n\n  // removing todo from local storage\n  static removeTodo(el) {\n    (0,_modules_deleteTodoFromLS_js__WEBPACK_IMPORTED_MODULE_1__.deleteTodoFromLS)(el, storedTodos);\n  }\n}\n\n// global variable\nconst storedTodos = Store.getTodos();\n\n// Todo Class: Represents a todo\nclass Todo {\n  constructor(ID, Description, Completed) {\n    this.ID = ID;\n    this.Description = Description;\n    this.Completed = Completed;\n  }\n}\n\n// UI Class: handles UI tasks\nclass UI {\n  // getting todos\n  static displayTodos() {\n    storedTodos.forEach((storedTodo) => {\n      UI.addTodoToList(storedTodo);\n    });\n    // handle update\n    const labels = document.querySelectorAll('.label');\n    labels.forEach((label) => {\n      label.addEventListener('blur', () => {\n        // your update logic\n        const id = Number(label.parentElement.parentElement.id);\n        storedTodos.forEach((storedTodo) => {\n          let item;\n          if (id === storedTodo.ID) {\n            item = storedTodo;\n            item.ID = storedTodo.ID;\n            item.Completed = false;\n            item.Description = label.textContent;\n            storedTodo = item;\n            localStorage.setItem('Todos', JSON.stringify(storedTodos));\n          }\n        });\n      });\n    });\n  }\n\n  // adding todo to list\n  static addTodoToList(storedTodo) {\n    // imported\n    (0,_modules_addTodoToUI_js__WEBPACK_IMPORTED_MODULE_2__.addTodoToUI)(storedTodo);\n  }\n\n  // clear form fields\n  static clearForm() {\n    document.querySelector('.input').value = '';\n  }\n\n  // delete todo from UI\n  static deleteTodo(el) {\n    (0,_modules_deleteTodoFromUI_js__WEBPACK_IMPORTED_MODULE_3__.deleteTodoFromUI)(el);\n  }\n}\n\n// Event Display Books\ndocument.addEventListener('DOMContentLoaded', UI.displayTodos);\n\n// Event Add a book\ndocument.getElementById('addTodos-form').addEventListener('submit', (e) => {\n  e.preventDefault();\n\n  // getting values\n  const description = document.querySelector('.input').value;\n  const completed = false;\n  const storedTodos = Store.getTodos();\n  const id = storedTodos.length + 1;\n\n  // instantiate todo\n  const todo = new Todo(id, description, completed);\n\n  // adding new todo to UI\n  UI.addTodoToList(todo);\n\n  // adding todo to LS\n  Store.addTodo(todo);\n\n  // clearing form fields\n  UI.clearForm();\n});\n\n// Event: remove a todo\ndocument.querySelector('.todo-container').addEventListener('click', (e) => {\n  UI.deleteTodo(e.target);\n  Store.removeTodo(e.target);\n});\n\n//# sourceURL=webpack://todo-list-using-webpack/./src/index.js?");
-
-/***/ }),
-
-/***/ "./src/modules/addTodoToUI.js":
-/*!************************************!*\
-  !*** ./src/modules/addTodoToUI.js ***!
-  \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"addTodoToUI\": () => (/* binding */ addTodoToUI)\n/* harmony export */ });\nconst addTodoToUI = (todo) => {\n  document.querySelector('.todo-container').innerHTML += `\n    <li class=\"todo\" id=\"${todo.ID}\">\n    <div class=\"left\">\n      <input type=\"checkbox\" ${todo.Completed ? 'checked' : 'unchecked'}/>\n      <label class=\"label\" contenteditable=\"true\">${todo.Description}</label>\n    </div>\n    <div class=\"right\">\n      <span class=\"fa-solid fa-trash fa-lg elippse-icon remove-btn\">\n      </span>\n    </div>\n  </li>      \n        `;\n};\n\n// eslint-disable-next-line import/prefer-default-export\n\n\n//# sourceURL=webpack://todo-list-using-webpack/./src/modules/addTodoToUI.js?");
-
-/***/ }),
-
-/***/ "./src/modules/deleteTodoFromLS.js":
-/*!*****************************************!*\
-  !*** ./src/modules/deleteTodoFromLS.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"deleteTodoFromLS\": () => (/* binding */ deleteTodoFromLS)\n/* harmony export */ });\nconst deleteTodoFromLS = (el, storedTodos) => {\n  if (el.classList.contains('remove-btn')) {\n    const elementID = el.parentElement.parentElement.id;\n    const idInNum = Number(elementID);\n    const filteredTodos = storedTodos.filter((storedTodo) => storedTodo.ID !== idInNum);\n    for (let i = 0; i < filteredTodos.length; i += 1) {\n      filteredTodos[i].ID = filteredTodos.indexOf(filteredTodos[i]) + 1;\n    }\n    localStorage.setItem('Todos', JSON.stringify(filteredTodos));\n  }\n};\n\n// eslint-disable-next-line import/prefer-default-export\n\n\n//# sourceURL=webpack://todo-list-using-webpack/./src/modules/deleteTodoFromLS.js?");
-
-/***/ }),
-
-/***/ "./src/modules/deleteTodoFromUI.js":
-/*!*****************************************!*\
-  !*** ./src/modules/deleteTodoFromUI.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"deleteTodoFromUI\": () => (/* binding */ deleteTodoFromUI)\n/* harmony export */ });\nconst deleteTodoFromUI = (el) => {\n  if (el.classList.contains('remove-btn')) {\n    el.parentElement.parentElement.remove();\n  }\n};\n\n// eslint-disable-next-line import/prefer-default-export\n\n\n//# sourceURL=webpack://todo-list-using-webpack/./src/modules/deleteTodoFromUI.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles.css */ \"./src/styles.css\");\n\n\n//# sourceURL=webpack://todo-list-using-webpack/./src/index.js?");
 
 /***/ })
 
